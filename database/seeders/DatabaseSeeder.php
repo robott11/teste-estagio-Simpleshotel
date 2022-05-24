@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Waiter;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,12 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->create([
-            'acc_type' => 'waiter'
-        ]);
-
-        User::factory()->create([
-            'acc_type' => 'admin'
-        ]);
+        Waiter::factory()->create();
     }
 }

@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="row d-flex justify-content-center">
-        <div class="col-5 bg-body border rounded mt-5 p-4">
+        <div class="col-sm-5 bg-body border rounded mt-5 p-4">
             <form method="POST">
                 @csrf
 
