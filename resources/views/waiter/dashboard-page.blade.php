@@ -109,7 +109,16 @@
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                         Cancelar
                                     </button>
-                                    <button type="submit" class="btn btn-primary">Reservar</button>
+                                    @if($table->status == 'ocupado')
+                                        <a href="{{ url('/dashboard/fechar', [$table->id]) }}" class="btn btn-success">Fechar Conta</a>
+                                    @endif
+                                    <button type="submit" class="btn btn-primary">
+                                        @if($table->status != 'livre')
+                                            Atualizar
+                                        @else
+                                            Reservar
+                                        @endif
+                                    </button>
                                 </div>
                             </form>
                         </div>

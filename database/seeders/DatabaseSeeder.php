@@ -28,6 +28,10 @@ class DatabaseSeeder extends Seeder
             'price' => 2000
         ]);
         Product::factory()->create([
+            'name' => 'Refrigerante',
+            'price' => 700
+        ]);
+        Product::factory()->create([
             'name' => 'PF',
             'price' => 2000
         ]);

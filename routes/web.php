@@ -20,4 +20,5 @@ Route::controller(WaiterController::class)->group(function () {
     Route::get('/logout', 'getLogout')->name('waiterLogout');
     Route::get('/dashboard','getDashboardPage')->name('waiterDashboard');
     Route::post('/dashboard', 'postDashboard');
+    Route::get('/dashboard/fechar/{table_id}', 'getCloseBillPage');
 });

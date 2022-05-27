@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TableModal;
 use App\Http\Requests\WaiterAuthentication;
+use App\Models\Product;
+use App\Models\Table;
 use App\Services\WaiterService;
 use Exception;
 use Illuminate\Http\RedirectResponse;
@@ -77,6 +79,27 @@ class WaiterController extends Controller
                 'error' => $exception->getMessage()
             ]);
         }
+    }
+
+    public function getCloseBillPage(Request $request): View
+    {
+        $tableId = $request->table_id;
+
+        $table = Table::find($tableId);
+        $tableOrders = $table->orders->where('table_id', '=', $tableId)->where('product_quantity', '>', 0);
+
+        $products = Product::all();
+        $totalPrice = 0;
+        foreach ($tableOrders as $tableOrder) {
+            $qtd = $tableOrder->product_quantity;
+            $totalPrice += $products->find($tableOrder->product_id)->price * $qtd;
+        }
+
+        return view('waiter.closeBill', [
+            'table' => $table,
+            'tableOrders' => $tableOrders,
+            'totalPrice' => $totalPrice
+        ]);
     }
 
     public function getLogout(): RedirectResponse
