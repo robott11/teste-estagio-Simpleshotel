@@ -2,8 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\Table;
 use App\Models\Waiter;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class WaiterService
@@ -21,8 +25,95 @@ class WaiterService
         }
     }
 
+    public function attemptTable(array $tableData): bool
+    {
+        $table = Table::find($tableData['table_id']);
+
+        if (!$table) {
+            throw new Exception('Essa mesa não existe!');
+        }
+
+        $orders = $this->formatOrdersRequest($tableData);
+
+        if ($table->status == 'livre') {
+            return $this->bookTable($tableData['table_id'], $tableData['clients'], $orders);
+        }
+
+        return $this->updateTable($tableData['table_id'], $tableData['clients'], $orders);
+    }
+
+    private function bookTable(int $table, int $clients, array $orders): bool
+    {
+        $newTable = Table::find($table);
+        $oldOrders = $newTable->orders;
+        foreach ($oldOrders as $order) {
+            $order->delete();
+        }
+
+        $newTable->status = 'ocupado';
+        $newTable->seats_taken = $clients;
+
+        foreach ($orders as $order_id => $qtd) {
+            $order = new Order();
+            $order->table_id = $table;
+            $order->product_id = $order_id;
+            $order->product_quantity = $qtd;
+            $order->save();
+        }
+
+        $newTable->save();
+
+        return true;
+    }
+
+    private function updateTable(int $tableId, int $newClientsNum, array $orders): bool
+    {
+        $table = Table::find($tableId);
+        $table->seats_taken = $newClientsNum;
+
+        $ordersModel = $table->orders;
+        foreach ($orders as $key => $value) {
+            $order = $ordersModel->where('product_id', '=', $key)->first();
+            $order->product_quantity = $value;
+            $order->save();
+        }
+
+        $table->save();
+
+        return true;
+    }
+
+    private function formatOrdersRequest(array $requestData): array
+    {
+        $orders = [];
+
+        foreach ($requestData as $key => $value) {
+            if (str_contains($key, 'product')) {
+                $id = str_replace('product', '', $key);
+                $orders[$id] = $value;
+            }
+        }
+
+        return $orders;
+    }
+
     public function logout(): void
     {
         Auth::guard('waiter')->logout();
+    }
+
+    public function getAllTables(): Collection
+    {
+        return Table::all();
+    }
+
+    public function getTable(string $id): Table
+    {
+        return Table::find($id);
+    }
+
+    public function getAllProducts(): Collection
+    {
+        return Product::all();
     }
 }

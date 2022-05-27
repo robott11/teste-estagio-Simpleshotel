@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(WaiterController::class)->group(function () {
     Route::get('/login', 'getLoginPage')->name('waiterLogin');
     Route::post('/login', 'postLogin');
-    Route::get('/dashboard','getDashboardPage');
     Route::get('/logout', 'getLogout')->name('waiterLogout');
+    Route::get('/dashboard','getDashboardPage')->name('waiterDashboard');
+    Route::post('/dashboard', 'postDashboard');
 });

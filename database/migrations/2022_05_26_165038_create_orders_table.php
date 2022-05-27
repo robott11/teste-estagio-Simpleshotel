@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tables', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['livre', 'ocupado']);
-            $table->tinyInteger('max_seats')->default(4);
-            $table->tinyInteger('seats_taken')->default(0);
+            $table->bigInteger('table_id');
+            $table->bigInteger('product_id');
+            $table->tinyInteger('product_quantity');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tables');
+        Schema::dropIfExists('orders');
     }
 };
