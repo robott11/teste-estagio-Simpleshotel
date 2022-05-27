@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\WaiterController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,4 +22,14 @@ Route::controller(WaiterController::class)->group(function () {
     Route::get('/dashboard','getDashboardPage')->name('waiterDashboard');
     Route::post('/dashboard', 'postDashboard');
     Route::get('/dashboard/fechar/{table_id}', 'getCloseBillPage');
+});
+
+Route::controller(AdminController::class)->group(function () {
+    Route::prefix('/admin')->group(function () {
+        Route::get('login', 'getLoginPage')->name('adminLogin');
+        Route::post('login', 'postLogin');
+        Route::get('logout', 'getLogout')->name('adminLogout');
+        Route::get('dashboard', 'getAdminDashboardPage')->name('adminDashboard');
+        Route::post('dashboard', 'postDashboard');
+    });
 });

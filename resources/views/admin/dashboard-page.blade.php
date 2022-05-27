@@ -1,19 +1,7 @@
-@extends('templates.dashboard-template')
-@section('title', 'SimplesHotel - Dashboard')
+@extends('templates.admin-template')
+@section('title', 'Admin - Dashboard')
 
 @section('content')
-    @if($errors->any())
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <ul>
-                @foreach($errors->all() as $message)
-                    <li>{{ $message }}</li>
-                @endforeach
-            </ul>
-
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
     <div class="row">
         @foreach($tables as $table)
             <div class="col-md-3">
@@ -26,11 +14,7 @@
 
                         <button class="btn @if($table->status != 'livre') btn-warning @else btn-info @endif"
                                 data-bs-toggle="modal" data-bs-target="#tableModal{{ $table->id }}">
-                            @if($table->status != 'livre')
-                                Editar
-                            @else
-                                Agendar
-                            @endif
+                            Info
                         </button>
                     </div>
                 </div>
@@ -64,7 +48,7 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="clients"
                                                    id="modalRadio{{ $table->id }}" value="{{ $i }}"
-                                                   @if($table->seats_taken == $i) checked @endif @if($table->status == 'ocupado') disabled @endif>
+                                                   @if($table->seats_taken == $i) checked @endif @if($table->status == 'livre') disabled @endif>
                                             <label class="form-check-label" for="modalRadio{{ $table->id }}">
                                                 {{ $i }}
                                             </label>
@@ -87,15 +71,9 @@
                                                 <tr>
                                                     <th scope="row">{{ $product->name }}</th>
                                                     <td>R$ {{ $product->price / 100 }}</td>
-                                                    <td>
-                                                        @if($table->status == 'livre')
-                                                            <input type="number" min="0"
+                                                    <td><input type="number" min="0"
                                                                value="{{ \App\Models\Order::where('table_id', '=', $table->id)->where('product_id', '=', $product->id)->first()->product_quantity }}"
-                                                                   name="product{{ $product->id }}">
-                                                        @else
-                                                            {{ \App\Models\Order::where('table_id', '=', $table->id)->where('product_id', '=', $product->id)->first()->product_quantity }}
-                                                        @endif
-                                                    </td>
+                                                               name="product{{ $product->id }}"></td>
                                                 </tr>
                                             @endforeach
                                         @else
@@ -103,8 +81,7 @@
                                                 <tr>
                                                     <th scope="row">{{ $product->name }}</th>
                                                     <td>R$ {{ $product->price / 100 }}</td>
-                                                    <td><input type="number" min="0" value="0"
-                                                               name="product{{ $product->id }}"></td>
+                                                    <td>0</td>
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -115,10 +92,8 @@
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                         Cancelar
                                     </button>
-                                    @if($table->status == 'ocupado')
-                                        <a href="{{ url('/dashboard/fechar', [$table->id]) }}" class="btn btn-success">Fechar Conta</a>
-                                    @else
-                                        <button type="submit" class="btn btn-primary">Reservar</button>
+                                    @if($table->status != 'livre')
+                                        <button type="submit" class="btn btn-primary">Atualizar</button>
                                     @endif
                                 </div>
                             </form>
@@ -129,17 +104,4 @@
             </div>
         @endforeach
     </div>
-
-    <script>
-        // Prevent empty number input fields
-        const numInputs = document.querySelectorAll('input[type=number]')
-
-        numInputs.forEach(function (input) {
-            input.addEventListener('change', function (e) {
-                if (e.target.value == '') {
-                    e.target.value = 0
-                }
-            })
-        })
-    </script>
 @endsection

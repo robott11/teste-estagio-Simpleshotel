@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use App\Models\Product;
 use App\Models\Table;
 use App\Models\Waiter;
@@ -18,6 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Waiter::factory()->create();
+        Admin::factory()->create();
         Table::factory(5)->create();
         Product::factory()->create([
             'name' => 'Água',
