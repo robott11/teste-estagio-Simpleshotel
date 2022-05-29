@@ -32,5 +32,6 @@ Route::controller(AdminController::class)->group(function () {
         Route::get('logout', 'getLogout')->name('adminLogout');
         Route::get('dashboard', 'getAdminDashboardPage')->name('adminDashboard');
         Route::post('dashboard', 'postDashboard');
+        Route::get('caixa', 'getCashierPage')->name('adminCashier');
     });
 });

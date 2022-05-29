@@ -23,7 +23,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Caixa
+                    <a class="nav-link" href="{{ route('adminCashier') }}">Caixa
                         <span class="visually-hidden">(current)</span>
                     </a>
                 </li>

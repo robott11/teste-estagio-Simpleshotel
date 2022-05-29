@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminAuthentication;
 use App\Http\Requests\TableModal;
+use App\Models\CustomerPayment;
 use App\Models\Product;
 use App\Models\Table;
+use App\Models\Transaction;
 use App\Services\AdminService;
 use App\Services\WaiterService;
 use Exception;
@@ -30,7 +32,7 @@ class AdminController extends Controller
         return view('admin.login-page');
     }
 
-    public function getAdminDashboardPage()
+    public function getAdminDashboardPage(): View
     {
         $tables = Table::all();
         $products = Product::all();
@@ -41,7 +43,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function postDashboard(TableModal $request)
+    public function postDashboard(TableModal $request): RedirectResponse|View
     {
         $tableData = $request->validated();
 
@@ -55,7 +57,7 @@ class AdminController extends Controller
         }
     }
 
-    public function postLogin(AdminAuthentication $request)
+    public function postLogin(AdminAuthentication $request): RedirectResponse
     {
         $credentials = $request->validated();
 
@@ -69,9 +71,20 @@ class AdminController extends Controller
         }
     }
 
-    public function getLogout()
+    public function getLogout(): RedirectResponse
     {
         $this->service->logout();
         return redirect()->route('adminLogin');
+    }
+
+    public function getCashierPage(): View
+    {
+        $transactions = Transaction::all();
+        $customerPayments = CustomerPayment::all();
+
+        return view('admin.cashier-page', [
+            'transactions' => $transactions,
+            'customerPayments' => $customerPayments
+        ]);
     }
 }
