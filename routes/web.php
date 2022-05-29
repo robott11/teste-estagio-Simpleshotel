@@ -22,6 +22,7 @@ Route::controller(WaiterController::class)->group(function () {
     Route::get('/dashboard','getDashboardPage')->name('waiterDashboard');
     Route::post('/dashboard', 'postDashboard');
     Route::get('/dashboard/fechar/{table_id}', 'getCloseBillPage');
+    Route::post('/dashboard/fechar/{table_id}', 'postCloseBill');
 });
 
 Route::controller(AdminController::class)->group(function () {

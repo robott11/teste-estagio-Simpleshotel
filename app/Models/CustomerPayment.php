@@ -5,19 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Table extends Model
+class CustomerPayment extends Model
 {
-    protected $table = 'tables';
+    protected $table = 'customers_payments';
 
     protected $fillable = [
-        'status',
-        'seats_taken'
+        'payment_method',
+        'amount_to_pay'
     ];
 
     use HasFactory;
-
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
 }

@@ -107,4 +107,14 @@ class WaiterController extends Controller
         $this->service->logout();
         return redirect('/login');
     }
+
+    public function postCloseBill(Request $request)
+    {
+        $requestData = $request->input();
+        $customersPayments = $this->service->formatPayments($requestData);
+
+        $this->service->closeBill($request->table_id, $request->total_price, $customersPayments);
+
+        return redirect('/dashboard');
+    }
 }

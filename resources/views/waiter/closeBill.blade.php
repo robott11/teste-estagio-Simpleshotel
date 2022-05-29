@@ -18,6 +18,8 @@
                 @csrf
 
                 <h2>Clientes: <strong>{{ $table->seats_taken }}</strong></h2>
+                <input type="hidden" name="customers" value="{{ $table->seats_taken }}">
+                <input type="hidden" name="total_price" value="{{ $totalPrice }}">
 
                 <table class="table table-hover">
                     <thead>
@@ -53,7 +55,7 @@
                         @for($i = 1; $i <= $table->seats_taken; $i++)
                             <div class="col-3">
                                 <label for="selectPayment{{ $i }}"><strong>Cliente</strong> {{ $i }}</label>
-                                <select name="" class="form-select" id="selectPayment{{ $i }}">
+                                <select name="client{{ $i }}" class="form-select" id="selectPayment{{ $i }}">
                                     <option value="dinheiro">Dinheiro</option>
                                     <option value="debito">Débito</option>
                                     <option value="credito">Crédito</option>

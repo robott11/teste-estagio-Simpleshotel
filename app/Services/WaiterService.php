@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\CustomerPayment;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Table;
+use App\Models\Transaction;
 use App\Models\Waiter;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -95,6 +97,43 @@ class WaiterService
         }
 
         return $orders;
+    }
+
+    public function closeBill(int $tableId, int $totalPrice, array $payments)
+    {
+        $transaction = new Transaction();
+        $transaction->total_price = $totalPrice;
+        $transaction->table_id = $tableId;
+        $transaction->save();
+
+        $customers = count($payments);
+        $customerPayment = $totalPrice / $customers;
+
+        foreach ($payments as $payment) {
+            $transaction->customers()->create([
+                'payment_method' => $payment,
+                'amount_to_pay' => $customerPayment
+            ]);
+        }
+
+        Table::find($tableId)->update([
+            'status' => 'livre',
+            'seats_taken' => 0
+        ]);
+    }
+
+    public function formatPayments(array $requestData)
+    {
+        $customersPayments = [];
+
+        foreach ($requestData as $key => $value) {
+            if (str_contains($key, 'client')) {
+                $id = str_replace('client', '', $key);
+                $customersPayments[$id] = $value;
+            }
+        }
+
+        return $customersPayments;
     }
 
     public function logout(): void
